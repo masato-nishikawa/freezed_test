@@ -1,49 +1,41 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // 自作の freezed クラスをインポート
 import 'models/user.dart'; 
+import 'providers/user_provider.dart';
 
-void main() async {
-  //　非同期処理を main() の中で使いたいときに必要な初期化処理
-  WidgetsFlutterBinding.ensureInitialized();
-  // 非同期処理の内容でusersを取得して渡す
-  final users = await UserLoader.loadListFromAssets();
-
-  runApp(MyApp(users: users));
+void main() {
+  runApp(
+    ProviderScope(
+      child: MyApp()
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  final List<User> users;
-
-  const MyApp({super.key, required this.users});
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncValue<List<User>> userList = ref.watch(userListProvider);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('ユーザーリスト')),
-        body: ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, index) {
-            final user = users[index];
-            return ListTile(
-              title: Text(user.name),
-              subtitle: Text('年齢: ${user.age}'),
-            );
-          },
+        body: userList.when(
+          data: (users) => ListView.builder(
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              final user = users[index];
+              return ListTile(
+                title: Text(user.name),
+                subtitle: Text('年齢: ${user.age}'),
+              );
+            },
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => Center(child: Text('エラー: $error')),
         ),
       ),
     );
-  }
-}
-
-class UserLoader {
-  static Future<List<User>> loadListFromAssets() async {
-    final path = ('assets/sample.json');
-    final jsonString = await rootBundle.loadString(path);
-    final jsonList = json.decode(jsonString) as List<dynamic>;
-
-    return jsonList.map((e) => User.fromJson(e)).toList();
   }
 }

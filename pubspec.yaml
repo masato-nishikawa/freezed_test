@@ -12,6 +12,9 @@ dependencies:
 # freezed
   freezed_annotation: ^2.4.1
   json_annotation: ^4.9.0 
+# Riverpod
+  flutter_riverpod: ^2.0.0 
+  riverpod_annotation: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -21,9 +24,15 @@ dev_dependencies:
   freezed: ^2.4.1 
   build_runner: ^2.4.15
   json_serializable: 6.9.4
-
+# Riverpod
+riverpod_generator: ^2.0.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/sample.json
+    - assets/sample_list.json
+
+# json_serializable と build_runner の最新安定バージョンに合う analyzer のバージョン
+# dependency_overrides:
+#   analyzer: ^7.0.0
