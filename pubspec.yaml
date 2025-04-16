@@ -10,17 +10,20 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
 # freezed
-  freezed_annotation: ^3.0.0
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
 # freezed
-  freezed: ^3.0.6 
+  freezed: ^2.4.1 
   build_runner: ^2.4.15
   json_serializable: 6.9.4
-  json_annotation: ^4.9.0 
+
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/sample.json
