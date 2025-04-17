@@ -34,6 +34,16 @@ class UserListNotifier extends StateNotifier<List<User>> {
           .map((user) => user.copyWith(age: user.age + 1))
           .toList();
     }
+
+  void incrementIdAge() {
+    state = state.map((user) {
+      if (user.name == '山田太郎') {
+        return user.copyWith(age: user.age + 1);
+      } else {
+        return user;
+      }
+    }).toList();
+  }
 }
 
 final userListProvider =

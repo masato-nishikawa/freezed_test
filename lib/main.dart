@@ -40,6 +40,7 @@ class MyApp extends ConsumerWidget {
             //notifier.shuffleUsers();
             // notifier.addDummyUser();
             notifier.incrementAges();
+            notifier.incrementIdAge();
           },
           child: const Icon(Icons.swap_vert),
         ),
