@@ -4,16 +4,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // 自作の freezed クラスをインポート
 import '../models/user.dart'; 
 
-class UserLoader {
-  static Future<List<User>> loadListFromAssets() async {
-    final path = ('assets/sample.json');
-    final jsonString = await rootBundle.loadString(path);
-    final jsonList = json.decode(jsonString) as List<dynamic>;
-
-    return jsonList.map((e) => User.fromJson(e)).toList();
+class UserListNotifier extends StateNotifier<List<User>> {
+  //「コンストラクタ」と「初期化処理」を組み合わせた記述
+  UserListNotifier() : super([]) {
+    loadUsers();
   }
+
+  Future<void> loadUsers() async {
+    final jsonString = await rootBundle.loadString('assets/sample.json');
+    final jsonList = json.decode(jsonString) as List<dynamic>;
+    state = jsonList.map((e) => User.fromJson(e)).toList();
+  }
+
+  // 内容をランダムにシャッフルして差し替える
+  void shuffleUsers() {
+    final newList = [...state]..shuffle();
+    state = newList;
+  }
+
+  // ユーザーを追加
+  void addDummyUser() {
+    final dummy = User(name: '新しいユーザー', id: '999', age: 99);
+    state = [...state, dummy];
+  }
+
+  // 全員の年齢を1増やす
+  void incrementAges() {
+      state = state
+          .map((user) => user.copyWith(age: user.age + 1))
+          .toList();
+    }
 }
 
-final userListProvider = FutureProvider<List<User>>((ref) async {
-  return await UserLoader.loadListFromAssets();
+final userListProvider =
+    StateNotifierProvider<UserListNotifier, List<User>>((ref) {
+  return UserListNotifier();
 });

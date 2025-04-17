@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // 自作の freezed クラスをインポート
-import 'models/user.dart'; 
 import 'providers/user_provider.dart';
 
 void main() {
@@ -17,23 +16,32 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<User>> userList = ref.watch(userListProvider);
+    final users = ref.watch(userListProvider);
+    final notifier = ref.read(userListProvider.notifier);
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('ユーザーリスト')),
-        body: userList.when(
-          data: (users) => ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              return ListTile(
-                title: Text(user.name),
-                subtitle: Text('年齢: ${user.age}'),
-              );
-            },
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => Center(child: Text('エラー: $error')),
+        body: users.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return ListTile(
+                    title: Text(user.name),
+                    subtitle: Text('年齢: ${user.age}'),
+                  );
+                },
+              ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // ここでユーザーリストを操作
+            //notifier.shuffleUsers();
+            // notifier.addDummyUser();
+            notifier.incrementAges();
+          },
+          child: const Icon(Icons.swap_vert),
         ),
       ),
     );

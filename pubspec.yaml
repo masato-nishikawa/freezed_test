@@ -31,7 +31,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/sample.json
-    - assets/sample_list.json
+#    - assets/sample_list.json
 
 # json_serializable と build_runner の最新安定バージョンに合う analyzer のバージョン
 # dependency_overrides:
